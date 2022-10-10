@@ -4,5 +4,4 @@ __pycache__
 db.sqlite3
 
 # archivos/carpetas ignoradas por mi
-notes.md
-grupos.md
+.uncommit

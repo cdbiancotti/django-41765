@@ -1,7 +1,7 @@
 from django.http import HttpResponse
 from datetime import datetime
 from django.template import Context, Template, loader
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 import random
 
 from home.models import Humano
@@ -47,17 +47,17 @@ def prueba_template(request):
     return HttpResponse(template_renderizado)
 
 
-def crear_persona(request, nombre, apellido):
+def crear_persona(request):
     
-    persona = Humano(nombre=nombre, apellido=apellido, edad=random.randrange(1, 99), fecha_nacimiento=datetime.now())
-    persona.save()
+    if request.method == 'POST':
+        nombre = request.POST.get('nombre')
+        apellido = request.POST['apellido']
+        persona = Humano(nombre=nombre, apellido=apellido, edad=random.randrange(1, 99), fecha_creacion=datetime.now())
+        persona.save()
+        
+        return redirect('ver_personas')
     
-    # template = loader.get_template('crear_persona.html')
-    # template_renderizado = template.render({'persona': persona})
-    
-    # return HttpResponse(template_renderizado)
-    
-    return render(request, 'home/crear_persona.html', {'persona': persona})
+    return render(request, 'home/crear_persona.html', {})
 
 
 def ver_personas(request):
