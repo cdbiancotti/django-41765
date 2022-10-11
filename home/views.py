@@ -3,6 +3,7 @@ from datetime import datetime
 from django.template import Context, Template, loader
 from django.shortcuts import render, redirect
 import random
+from home.forms import HumanoFormulario, BusquedaHumanoFormulario
 
 from home.models import Humano
 
@@ -50,25 +51,39 @@ def prueba_template(request):
 def crear_persona(request):
     
     if request.method == 'POST':
-        nombre = request.POST.get('nombre')
-        apellido = request.POST['apellido']
-        persona = Humano(nombre=nombre, apellido=apellido, edad=random.randrange(1, 99), fecha_creacion=datetime.now())
-        persona.save()
         
-        return redirect('ver_personas')
+        formulario = HumanoFormulario(request.POST)
+        
+        if formulario.is_valid():
+            data = formulario.cleaned_data
+        
+            nombre = data['nombre']
+            apellido = data['apellido']
+            edad = data['edad']
+            fecha_creacion = data.get('fecha_creacion', datetime.now())
+            
+            persona = Humano(nombre=nombre, apellido=apellido, edad=edad, fecha_creacion=fecha_creacion)
+            persona.save()
+            
+            return redirect('ver_personas')
     
-    return render(request, 'home/crear_persona.html', {})
+    formulario = HumanoFormulario()
+    
+    return render(request, 'home/crear_persona.html', {'formulario': formulario})
 
 
 def ver_personas(request):
     
-    personas = Humano.objects.all()
+    nombre = request.GET.get('nombre', None)
     
-    # template = loader.get_template('ver_personas.html')
-    # template_renderizado = template.render({'personas': personas})
-    # return HttpResponse(template_renderizado)
+    if nombre:
+        personas = Humano.objects.filter(nombre__icontains=nombre)
+    else:
+        personas = Humano.objects.all()
     
-    return render(request, 'home/ver_personas.html', {'personas': personas})
+    formulario = BusquedaHumanoFormulario()
+    
+    return render(request, 'home/ver_personas.html', {'personas': personas, 'formulario': formulario})
 
 def index(request):
     
