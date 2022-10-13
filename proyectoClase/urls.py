@@ -20,5 +20,6 @@ urlpatterns = [
     # path('home/', include('home.urls')),
     path('', include('home.urls')),
     # path('', include('otraAplicacion.urls')),
+    path('avanzado/', include('avanzado.urls')),
     path('admin/', admin.site.urls),
 ]
