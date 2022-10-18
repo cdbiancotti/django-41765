@@ -5,6 +5,9 @@ from avanzado.forms import MascotaFormulario
 from django.views.generic import ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
+
 
 def ver_mascotas(request):
     
@@ -12,7 +15,7 @@ def ver_mascotas(request):
     
     return render(request, 'avanzado/ver_mascotas.html', {'mascotas': mascotas})
 
-
+@login_required
 def crear_mascota(request):
     
     if request.method == 'POST':
@@ -86,14 +89,14 @@ class CrearMascota(CreateView):
     fields = ['nombre', 'tipo', 'edad', 'fecha_nacimiento']
     
     
-class EditarMascota(UpdateView):
+class EditarMascota(LoginRequiredMixin, UpdateView):
     model = Mascota
     success_url = '/avanzado/mascotas/'
     template_name = 'avanzado/editar_mascota_cbv.html'
     fields = ['nombre', 'tipo', 'edad', 'fecha_nacimiento']
     
     
-class EliminarMascota(DeleteView):
+class EliminarMascota(LoginRequiredMixin, DeleteView):
     model = Mascota
     success_url = '/avanzado/mascotas/'
     template_name = 'avanzado/eliminar_mascota_cbv.html'
