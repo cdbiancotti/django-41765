@@ -1,0 +1,16 @@
+{% extends 'padres/base.html' %}
+
+{% block title_pagina %}
+<title>Editar Auto</title>
+{% endblock title_pagina %}
+
+
+{% block mi_contenido %}
+<form action={% url 'editar_auto' auto.id %} method="POST">
+    {% csrf_token %}
+    <table>
+        {{form}}
+    </table>
+    <button>Editar</button>
+</form>
+{% endblock mi_contenido %}
