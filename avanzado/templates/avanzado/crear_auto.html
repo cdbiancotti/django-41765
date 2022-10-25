@@ -9,6 +9,7 @@
 <form action={% url 'crear_auto' %} method="POST">
     {% csrf_token %}
     <table>
+        {{form.media}}
         {{form}}
     </table>
     <button>Crear</button>

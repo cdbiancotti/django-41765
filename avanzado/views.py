@@ -1,8 +1,8 @@
 from django.shortcuts import redirect, render
 from avanzado.models import Mascota, Auto
-from avanzado.forms import MascotaFormulario
+from avanzado.forms import MascotaFormulario, BusquedaAuto
 
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -83,19 +83,34 @@ class ListaAutos(ListView):
     model = Auto
     template_name = 'avanzado/ver_autos.html'
     
+    # https://docs.djangoproject.com/en/4.1/ref/class-based-views/mixins-multiple-object/#django.views.generic.list.MultipleObjectMixin.get_queryset
+    
+    def get_queryset(self):
+        chasis = self.request.GET.get('chasis', '')
+        if chasis:
+            object_list = self.model.objects.filter(chasis__icontains=chasis)
+        else:
+            object_list = self.model.objects.all()
+        return object_list
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["formulario"] = BusquedaAuto()
+        return context
+    
     
 class CrearAuto(LoginRequiredMixin, CreateView):
     model = Auto
     success_url = '/avanzado/autos/'
     template_name = 'avanzado/crear_auto.html'
-    fields = ['modelo', 'marca', 'cant_puertas', 'color', 'chasis']
+    fields = ['modelo', 'marca', 'cant_puertas', 'color', 'chasis', 'descripcion']
     
     
 class EditarAuto(LoginRequiredMixin, UpdateView):
     model = Auto
     success_url = '/avanzado/autos/'
     template_name = 'avanzado/editar_auto.html'
-    fields = ['modelo', 'marca', 'cant_puertas', 'color']
+    fields = ['modelo', 'marca', 'cant_puertas', 'color', 'descripcion']
     
     
 class EliminarAuto(LoginRequiredMixin, DeleteView):
@@ -104,4 +119,6 @@ class EliminarAuto(LoginRequiredMixin, DeleteView):
     template_name = 'avanzado/eliminar_auto.html'
     
     
-# class VerMascota():
+class VerAuto(DetailView):
+    model = Auto
+    template_name = 'avanzado/ver_auto.html'

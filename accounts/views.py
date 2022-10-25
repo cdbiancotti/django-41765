@@ -2,7 +2,7 @@ from django.shortcuts import redirect, render
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth import login
 # from django.contrib.auth import login as django_login
-from accounts.forms import MiFormularioDeCreacion, EditarPerfilFormulario
+from accounts.forms import MiFormularioDeCreacion, EditarPerfilFormulario, MiCambioDePassword
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import PasswordChangeView
@@ -72,3 +72,4 @@ def editar_perfil(request):
 class CambiarContrasenia(LoginRequiredMixin, PasswordChangeView):
     template_name = 'accounts/cambiar_contrasenia.html'
     success_url = '/accounts/perfil/'
+    form_class = MiCambioDePassword

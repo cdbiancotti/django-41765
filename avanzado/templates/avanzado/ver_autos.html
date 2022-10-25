@@ -8,16 +8,16 @@
 <a class="navbar-brand" href={% url 'crear_auto' %}>Crear Auto</a>
 <p>Listado de Autos:</p>
 
-{% comment %} <form action={% url 'ver_mascotas' %} method="GET">
+<form action={% url 'ver_autos' %} method="GET">
     {{formulario}}
     <button>Buscar</button>
-</form> {% endcomment %}
+</form>
 <p>
     {% if object_list %}
 
         {% for auto in object_list %}
             <li>
-                {{auto}}
+                <a href={% url 'ver_auto' auto.id %}>{{auto}}</a>
                 <a href={% url 'editar_auto' auto.id %}>Editar</a>
                 <a href={% url 'eliminar_auto' auto.id %}>Eliminar</a>
             </li>
